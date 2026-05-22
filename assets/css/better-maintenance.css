@@ -27,8 +27,10 @@
 }
 
 .better-maintenance-preview__value {
-	background: #f4f7f9;
+	background: var(--form-bg-color, var(--body-bg-color, transparent));
+	border: 1px solid var(--form-border-color, var(--table-border-color, #dfe4e8));
 	border-radius: 4px;
+	color: inherit;
 	padding: 8px 10px;
 	word-break: break-word;
 }
