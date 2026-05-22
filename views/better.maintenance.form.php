@@ -28,6 +28,7 @@ foreach ($data['hosts'] as $host) {
 
 $settings = $data['settings'];
 $form_grid = new CFormGrid();
+$show_name_preview = $settings['teams_enabled'] || $settings['username_suffix_enabled'];
 
 if ($settings['teams_enabled'] && $settings['teams']) {
 	// Team selection is optional at module level, but required when the Teams feature is enabled.
@@ -53,15 +54,20 @@ $form_grid
 				->setWidth(ZBX_TEXTAREA_STANDARD_WIDTH)
 				->setAriaRequired()
 		)
-	])
-	->addItem([
+	]);
+
+if ($show_name_preview) {
+	$form_grid->addItem([
 		new CLabel(_('Maintenance name')),
-		new CFormField(
-			$data['settings']['username_suffix_enabled']
-				? _s('Username suffix will be appended automatically: %1$s', $data['username'])
-				: _('The maintenance name will use only the entered values.')
-		)
-	])
+		new CFormField([
+			new CDiv([
+				(new CDiv(''))->setId('better-maintenance-name-preview')->addClass('better-maintenance-preview__value')
+			])
+		])
+	]);
+}
+
+$form_grid
 	->addItem([
 		(new CLabel(_('Maintenance type'), 'maintenance_type')),
 		new CFormField(

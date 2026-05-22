@@ -25,3 +25,10 @@
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
+
+.better-maintenance-preview__value {
+	background: #f4f7f9;
+	border-radius: 4px;
+	padding: 8px 10px;
+	word-break: break-word;
+}

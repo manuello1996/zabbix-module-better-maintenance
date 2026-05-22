@@ -6,10 +6,18 @@ window.better_maintenance_popup = new class {
 		this.overlay = overlays_stack.getById('better-maintenance-create');
 		this.dialogue = this.overlay.$dialogue[0];
 		this.form = this.overlay.$dialogue.$body[0].querySelector('form');
+		this.name_preview = document.getElementById('better-maintenance-name-preview');
 
 		document.getElementById('duration_mode').addEventListener('change', () => this.update());
 		document.getElementById('start_mode').addEventListener('change', () => this.update());
+		document.getElementById('name_suffix').addEventListener('input', () => this.updateNamePreview());
+
+		for (const prefix of this.form.querySelectorAll('[name="prefix"]')) {
+			prefix.addEventListener('change', () => this.updateNamePreview());
+		}
+
 		this.update();
+		this.updateNamePreview();
 
 		this.form.style.display = '';
 		(this.form.querySelector('[name="prefix"]') || document.getElementById('name_suffix')).focus();
@@ -29,6 +37,34 @@ window.better_maintenance_popup = new class {
 
 		document.getElementById('duration_custom').disabled = !custom_selected;
 		document.getElementById('active_since').disabled = !custom_start_selected;
+	}
+
+	updateNamePreview() {
+		if (this.name_preview === null) {
+			return;
+		}
+
+		const parts = [];
+		const prefix = this.form.querySelector('[name="prefix"]:checked')?.value || '';
+		const detail = document.getElementById('name_suffix').value.trim();
+		const username = <?= json_encode((string) $data['username']) ?>;
+		const username_suffix_enabled = <?= json_encode((bool) $data['settings']['username_suffix_enabled']) ?>;
+
+		if (prefix !== '') {
+			parts.push(prefix);
+		}
+
+		if (detail !== '') {
+			parts.push(detail);
+		}
+
+		if (username_suffix_enabled && username !== '') {
+			parts.push(username);
+		}
+
+		this.name_preview.textContent = parts.length > 0
+			? parts.join(' - ')
+			: <?= json_encode(_('Preview will appear here once you start filling the name.')) ?>;
 	}
 
 	submit() {

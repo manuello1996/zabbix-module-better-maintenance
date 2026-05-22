@@ -10,7 +10,8 @@
 		}
 
 		const nav = tabs.querySelector('.ui-tabs-nav') || createNavigation(tabs, config);
-		const main_footer = [...tabs.children].find((child) => child.classList.contains('form-buttons'));
+		const native_footers = [...document.querySelectorAll('.form-buttons')]
+			.filter((footer) => !footer.classList.contains('bm-form-buttons'));
 		const link_item = document.createElement('li');
 		const link = document.createElement('a');
 		link.href = '#better-maintenance-settings-tab';
@@ -26,30 +27,29 @@
 		tab.setAttribute('aria-hidden', 'true');
 		tabs.appendChild(tab);
 
-		const initial_tab = window.location.hash === '#better-maintenance-settings-tab' ? 1 : 0;
+		const maintenance_tab_index = [...nav.children].findIndex((item) =>
+			item.querySelector('a')?.getAttribute('href') === '#better-maintenance-settings-tab'
+		);
+		const initial_tab = window.location.hash === '#better-maintenance-settings-tab'
+			? maintenance_tab_index
+			: getCurrentActiveTabIndex(tabs);
 
 		if (jQuery(tabs).data('uiTabs')) {
 			jQuery(tabs).tabs('refresh');
+			jQuery(tabs).off('tabsactivate.betterMaintenanceSettings');
+			jQuery(tabs).on('tabsactivate.betterMaintenanceSettings', () => toggleNativeFooters(tabs, native_footers));
 			jQuery(tabs).tabs('option', 'active', initial_tab);
 		}
 		else {
 			jQuery(tabs).tabs({
 				active: initial_tab,
-				activate(event, ui) {
-					if (!main_footer) {
-						return;
-					}
-
-					main_footer.style.display = ui.newPanel.attr('id') === 'better-maintenance-settings-tab'
-						? 'none'
-						: '';
+				activate() {
+					toggleNativeFooters(tabs, native_footers);
 				}
 			});
 		}
 
-		if (main_footer) {
-			main_footer.style.display = initial_tab === 1 ? 'none' : '';
-		}
+		toggleNativeFooters(tabs, native_footers);
 
 		const teams_enabled = document.getElementById('bm-teams-enabled');
 		const teams_text = document.getElementById('bm-teams-text');
@@ -64,6 +64,26 @@
 		});
 
 		save_button.addEventListener('click', () => saveSettings(config));
+	}
+
+	function toggleNativeFooters(tabs, native_footers) {
+		const hide_native_footers = getActivePanelId(tabs) === 'better-maintenance-settings-tab';
+
+		for (const footer of native_footers) {
+			footer.style.display = hide_native_footers ? 'none' : '';
+		}
+	}
+
+	function getActivePanelId(tabs) {
+		const active_link = tabs.querySelector('.ui-tabs-nav .ui-tabs-active a');
+
+		return active_link ? active_link.getAttribute('href')?.slice(1) || '' : '';
+	}
+
+	function getCurrentActiveTabIndex(tabs) {
+		const active_item = tabs.querySelector('.ui-tabs-nav .ui-tabs-active');
+
+		return active_item ? [...active_item.parentNode.children].indexOf(active_item) : 0;
 	}
 
 	function saveSettings(config) {
