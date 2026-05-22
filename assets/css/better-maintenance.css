@@ -1,0 +1,27 @@
+.better-maintenance-hosts {
+	max-height: 180px;
+	overflow: auto;
+	width: 100%;
+}
+
+.better-maintenance-list {
+	max-height: 220px;
+	overflow: auto;
+	width: 100%;
+}
+
+.better-maintenance-hosts .list-table {
+	min-width: 100%;
+}
+
+.better-maintenance-list .list-table {
+	min-width: 100%;
+}
+
+.better-maintenance-hosts td,
+.better-maintenance-list td {
+	max-width: 260px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}

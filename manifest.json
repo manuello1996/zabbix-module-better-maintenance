@@ -1,0 +1,33 @@
+{
+	"manifest_version": 2.0,
+	"id": "better-maintenance",
+	"name": "Better Maintenance",
+	"namespace": "BetterMaintenance",
+	"version": "1.0",
+	"author": "Manuel Pesenti",
+	"description": "Fast maintenance creation for selected hosts.",
+	"actions": {
+		"better.maintenance.create": {
+			"class": "BetterMaintenanceCreate",
+			"layout": "layout.json"
+		},
+		"better.maintenance.form": {
+			"class": "BetterMaintenanceForm",
+			"view": "better.maintenance.form",
+			"layout": "layout.json"
+		},
+		"better.maintenance.add.form": {
+			"class": "BetterMaintenanceAddForm",
+			"view": "better.maintenance.add.form",
+			"layout": "layout.json"
+		},
+		"better.maintenance.add": {
+			"class": "BetterMaintenanceAdd",
+			"layout": "layout.json"
+		},
+		"better.maintenance.settings.update": {
+			"class": "BetterMaintenanceSettingsUpdate",
+			"layout": "layout.json"
+		}
+	}
+}
